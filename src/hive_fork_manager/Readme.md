@@ -207,6 +207,27 @@ It is quite possible that applications which use the fork system will want to ch
 
 When a table is edited, its shadow table is automatically adapted to the new structure (the old shadow table is dropped and a new one is created with the new structure).
 
+### States Providers Library
+There are examples of applications which are generic and theirs tables could be used by whide range of more specific applicatations.
+Some of common application are embedded inside hive_fork_manager in form of state providers: tables definitions and
+code to fill them.
+
+#### Why we introduced The States Providers instead of preparing regular application
+The problem is that applications work with different speeds and so thy work on data snapshots from different blockchain time.
+If we would deliver regular application, then any user application won't be synchronized with delivered applications.
+The Applications may read data from prepared applications which are not fit to theirs states.
+
+Another problems is authorization - one application cannot look at data of other applications (except when they are owned by the same postgres role).
+This problem can be partially solved with group roles and privileges inheritance, but it is not sure if would be possible
+to prevent writing by users applications to the prepared application tables.
+
+### Why we introduced The States Providers instead of extend the set of reversible/irreversible tables
+There is a one big difference between reversible data and other tables - reversible data are only inserted or removed, other tables
+can also be updated. Whole reversible/irreversible mechanics is based on assumption that the rows are only inserted
+or removed during fork is serviced.
+
+
+
 ## Database structure
 ### Fork manager
 ![alt text](./doc/evq_fork_db.png)
