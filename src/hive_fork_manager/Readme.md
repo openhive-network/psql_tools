@@ -213,9 +213,9 @@ Some of common application are embedded inside hive_fork_manager in form of stat
 code to fill them.
 
 #### Why we introduced The States Providers instead of preparing regular application
-The problem is that applications work with different speeds and so thy work on data snapshots from different blockchain time.
+The problem is that applications work with different speeds and so they work on data snapshots from different blockchain time.
 If we would deliver regular application, then any user application won't be synchronized with delivered applications.
-The Applications may read data from prepared applications which are not fit to theirs states.
+The applications may read data from prepared applications which are not fit to theirs states.
 
 Another problems is authorization - one application cannot look at data of other applications (except when they are owned by the same postgres role).
 This problem can be partially solved with group roles and privileges inheritance, but it is not sure if would be possible
@@ -225,6 +225,14 @@ to prevent writing by users applications to the prepared application tables.
 There is a one big difference between reversible data and other tables - reversible data are only inserted or removed, other tables
 can also be updated. Whole reversible/irreversible mechanics is based on assumption that the rows are only inserted
 or removed during fork is serviced.
+
+### Basic concept
+A state provider is a sql code which contains tables definitions and methods to fill that tables. An user's application
+can import a provider with sql command `hive.import_state_provider( _state_name, _context )`. During import new tables
+are created and regitered in application's context. The application needs to call `hive.update_imported_states( range_of_blocks )`
+to update tables created by imported states providers.
+
+
 
 
 
