@@ -232,6 +232,29 @@ can import a provider with sql command `hive.import_state_provider( _state_name,
 are created and regitered in application's context. The application needs to call `hive.update_imported_states( range_of_blocks )`
 to update tables created by imported states providers.
 
+The import of providers must be callad by the application before any call of its massive sync or hive.app_next_block. Repeating
+the same import do nothing.
+
+### State provider structure
+Each state provider is a sql file which contains functions:
+1. hive.start_state_provider_<provider_name>( context )
+   
+   The function gests application context name and creates tables to hold the state. The tables name have format
+   `hive.<base_table_name><context_name>` and returns list of created tables names.
+2. hive.update_state_<provider_name>( blocks_range, context )
+   The function updates all providers table registerd in the context
+
+### State provider and forks
+When context is a non-forking one, then the tables are not registered to rewind during a fork servicing. When the context
+is forking one then the tables are registered in forking mechanism and will be rewinded during forks. When the contexts
+is changing from non-forking to forking one, then provider's tables being also registered.
+
+### Disadvanteges
+Each application which imports any state provider got the tables exclusively for its PostgreSql Role. A lot of data may be
+redundant in case when a few applications use the same state provider, because of each them has its own private instation of provider's
+tables. It may look redundant for some cases, but indeed there is no other method to guarantee consistency between provider's
+state and other application's tables. 
+
 
 
 
