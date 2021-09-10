@@ -132,6 +132,36 @@ END;
 $BODY$
 ;
 
+CREATE OR REPLACE FUNCTION hive.copy_accounts_to_irreversible(
+      _head_block_of_irreversible_blocks INT
+    , _new_irreversible_block INT )
+    RETURNS void
+    LANGUAGE plpgsql
+    VOLATILE
+AS
+$BODY$
+BEGIN
+    INSERT INTO hive.accounts
+    SELECT
+           har.id
+         , har.name
+         , har.block_num
+    FROM
+        hive.accounts_reversible har
+            JOIN ( SELECT
+                         DISTINCT ON ( har2.block_num ) har2.block_num
+                       , har2.fork_id
+                   FROM hive.accounts_reversible har2
+                   WHERE
+                       har2.block_num <= _new_irreversible_block
+                   AND har2.block_num > _head_block_of_irreversible_blocks
+                   ORDER BY har2.block_num ASC, har2.fork_id DESC
+        ) as num_and_forks ON har.block_num = num_and_forks.block_num AND har.fork_id = num_and_forks.fork_id
+    ;
+END;
+$BODY$
+;
+
 CREATE OR REPLACE FUNCTION hive.remove_obsolete_reversible_data( _new_irreversible_block INT )
     RETURNS void
     LANGUAGE plpgsql
