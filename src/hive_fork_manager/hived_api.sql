@@ -108,12 +108,14 @@ BEGIN
     PERFORM hive.save_and_drop_indexes_foreign_keys( 'hive', 'transactions' );
     PERFORM hive.save_and_drop_indexes_foreign_keys( 'hive', 'transactions_multisig' );
     PERFORM hive.save_and_drop_indexes_foreign_keys( 'hive', 'operations' );
+    PERFORM hive.save_and_drop_indexes_foreign_keys( 'hive', 'accounts' );
 
     PERFORM hive.save_and_drop_indexes_constraints( 'hive.irreversible_data' );
     PERFORM hive.save_and_drop_indexes_constraints( 'hive.blocks' );
     PERFORM hive.save_and_drop_indexes_constraints( 'hive.transactions' );
     PERFORM hive.save_and_drop_indexes_constraints( 'hive.transactions_multisig' );
     PERFORM hive.save_and_drop_indexes_constraints( 'hive.operations' );
+    PERFORM hive.save_and_drop_indexes_constraints( 'hive.accounts' );
 END;
 $BODY$
 ;
@@ -130,12 +132,14 @@ BEGIN
     PERFORM hive.restore_indexes_constraints( 'hive.transactions_multisig' );
     PERFORM hive.restore_indexes_constraints( 'hive.operations' );
     PERFORM hive.restore_indexes_constraints( 'hive.irreversible_data' );
+    PERFORM hive.restore_indexes_constraints( 'hive.accounts' );
 
     PERFORM hive.restore_foreign_keys( 'hive.blocks' );
     PERFORM hive.restore_foreign_keys( 'hive.transactions' );
     PERFORM hive.restore_foreign_keys( 'hive.transactions_multisig' );
     PERFORM hive.restore_foreign_keys( 'hive.operations' );
     PERFORM hive.restore_foreign_keys( 'hive.irreversible_data' );
+    PERFORM hive.restore_foreign_keys( 'hive.accounts' );
 END;
 $BODY$
 ;
