@@ -60,8 +60,8 @@ CREATE INDEX IF NOT EXISTS hive_operations_block_num_type_trx_in_block_idx ON hi
 CREATE TABLE IF NOT EXISTS hive.accounts (
       id INTEGER NOT NULL
     , name VARCHAR(16) NOT NULL
-    , block_num_created INTEGER NOT NULL
+    , block_num INTEGER NOT NULL
     , CONSTRAINT pk_hive_accounts_id PRIMARY KEY( id )
     , CONSTRAINT uq_hive_accounst_name UNIQUE ( name )
-    , CONSTRAINT fk_1_hive_accounts FOREIGN KEY (block_num_created) REFERENCES hive.blocks (num)
+    , CONSTRAINT fk_1_hive_accounts FOREIGN KEY (block_num) REFERENCES hive.blocks (num)
 );

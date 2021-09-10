@@ -295,3 +295,63 @@ BEGIN
 END;
 $BODY$
 ;
+
+CREATE OR REPLACE FUNCTION hive.create_accounts_view( _context_name TEXT )
+    RETURNS void
+    LANGUAGE plpgsql
+    VOLATILE
+AS
+$BODY$
+BEGIN
+EXECUTE format(
+        'DROP VIEW IF EXISTS hive.%s_accounts_view;
+        CREATE VIEW hive.%s_accounts_view AS
+        SELECT
+           t.block_num,
+           t.id,
+           t.name
+        FROM hive.%s_context_data_view c,
+        LATERAL
+        (
+          SELECT ha.block_num,
+                 ha.id,
+                 ha.name
+                FROM hive.accounts ha
+                WHERE ha.block_num <= c.min_block
+                UNION ALL
+                SELECT
+                    reversible.block_num,
+                    reversible.id,
+                    reversible.name
+                FROM ( SELECT
+                    har.block_num,
+                    har.id,
+                    har.name,
+                    har.fork_id
+                FROM hive.accounts_reversible har
+                JOIN (
+                   SELECT har2.block_num, MAX(har2.fork_id) AS max_fork_id
+                   FROM hive.accounts_reversible har2
+                   WHERE c.reversible_range AND har2.block_num > c.irreversible_block AND har2.fork_id <= c.fork_id AND har2.block_num <= c.current_block_num
+                   GROUP BY har2.block_num
+                ) as forks ON forks.max_fork_id = har.fork_id AND forks.block_num = har.block_num
+             ) reversible
+        ) t
+        ;'
+    , _context_name, _context_name, _context_name
+    );
+END;
+$BODY$
+;
+
+CREATE OR REPLACE FUNCTION hive.drop_accounts_view( _context_name TEXT )
+    RETURNS void
+    LANGUAGE plpgsql
+    VOLATILE
+AS
+$BODY$
+BEGIN
+EXECUTE format( 'DROP VIEW hive.%s_accounts_view;', _context_name );
+END;
+$BODY$
+;
