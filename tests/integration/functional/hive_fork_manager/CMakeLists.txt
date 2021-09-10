@@ -190,6 +190,10 @@ ADD_SQL_FUNCTIONAL_TESTS( app_api/context_operations_view_non_forking_detach_tes
 ADD_SQL_FUNCTIONAL_TESTS( app_api/context_operations_view_detach_test.sql )
 ADD_SQL_FUNCTIONAL_TESTS( app_api/context_transactions_view_non_forking_detach_test.sql )
 ADD_SQL_FUNCTIONAL_TESTS( app_api/context_transactions_view_detach_test.sql )
+ADD_SQL_FUNCTIONAL_TESTS( app_api/context_accounts_view_test.sql )
+ADD_SQL_FUNCTIONAL_TESTS( app_api/context_accounts_view_detach_test.sql )
+ADD_SQL_FUNCTIONAL_TESTS( app_api/context_accounts_view_nonforking_test.sql )
+ADD_SQL_FUNCTIONAL_TESTS( app_api/context_accounts_view_nonforking_detach_test.sql )
 
 ADD_SQL_FUNCTIONAL_TESTS( scenarios/massive_sync_live_blocks_and_fork.sql )
 ADD_SQL_FUNCTIONAL_TESTS( scenarios/massive_sync_live_blocks_and_fork_non_forking_app.sql )
