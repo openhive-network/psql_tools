@@ -155,7 +155,7 @@ BEGIN
     ORDER BY hac.fork_id ASC, hac.current_block_num ASC
     LIMIT 1;
 
-    IF __lowest_contexts_fork IS NULL OR __lowest_contexts_block_on_fork IS NULL THEN
+    IF ( __lowest_contexts_fork IS NULL ) OR ( __lowest_contexts_block_on_fork IS NULL ) OR  __lowest_contexts_fork = __current_fork THEN
         __lowest_contexts_fork = __current_fork;
         __lowest_contexts_block_on_fork = _new_irreversible_block;
     END IF;
@@ -187,18 +187,19 @@ CREATE OR REPLACE FUNCTION hive.remove_unecessary_events( _new_irreversible_bloc
 AS
 $BODY$
 DECLARE
-    __lowest_events_id BIGINT := NULL;
+    __upper_bound_events_id BIGINT := NULL;
     __max_block_num INTEGER := NULL;
 BEGIN
     SELECT consistent_block INTO __max_block_num FROM hive.irreversible_data;
 
-    SELECT MIN(heq.id) INTO __lowest_events_id
+    -- find the upper bound of events possible to remove
+    SELECT MIN(heq.id) INTO __upper_bound_events_id
     FROM hive.events_queue heq
     WHERE heq.event != 'BACK_FROM_FORK' AND heq.block_num = ( _new_irreversible_block + 1 ); --next block after irreversible
 
     DELETE FROM hive.events_queue heq
     USING ( SELECT MIN( hc.events_id) as id FROM hive.contexts hc ) as min_event
-    WHERE ( heq.id < __lowest_events_id OR __lowest_events_id IS NULL )  AND ( heq.id < min_event.id OR min_event.id IS NULL ) AND heq.id != 0;
+    WHERE ( heq.id < __upper_bound_events_id OR __upper_bound_events_id IS NULL )  AND ( heq.id < min_event.id OR min_event.id IS NULL ) AND heq.id != 0;
 
 END;
 $BODY$
