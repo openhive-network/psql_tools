@@ -139,43 +139,32 @@ CREATE OR REPLACE FUNCTION hive.remove_obsolete_reversible_data( _new_irreversib
 AS
 $BODY$
 DECLARE
-    __lowest_contexts_fork BIGINT;
-    __lowest_contexts_block_on_fork INT;
-    __current_fork BIGINT;
+    __lowest_contexts_irreversible_block INT;
 BEGIN
-    SELECT MAX( hf.id ) INTO __current_fork FROM hive.fork hf;
+    SELECT MIN( hac.irreversible_block )
+    INTO __lowest_contexts_irreversible_block
+    FROM hive.contexts hac;
 
-    ASSERT __current_fork IS NOT NULL;
-
-    SELECT
-          COALESCE( hac.fork_id, 0 )
-        , COALESCE( hac.current_block_num, 0 )
-    INTO __lowest_contexts_fork, __lowest_contexts_block_on_fork
-    FROM hive.contexts hac
-    ORDER BY hac.fork_id ASC, hac.current_block_num ASC
-    LIMIT 1;
-
-    IF ( __lowest_contexts_fork IS NULL ) OR ( __lowest_contexts_block_on_fork IS NULL ) OR  __lowest_contexts_fork = __current_fork THEN
-        __lowest_contexts_fork = __current_fork;
-        __lowest_contexts_block_on_fork = _new_irreversible_block;
+    IF __lowest_contexts_irreversible_block IS NULL THEN
+        __lowest_contexts_irreversible_block = _new_irreversible_block;
     END IF;
 
     DELETE FROM hive.operations_reversible hor
-    WHERE hor.fork_id <= __lowest_contexts_fork AND hor.block_num < __lowest_contexts_block_on_fork;
+    WHERE hor.block_num < __lowest_contexts_irreversible_block;
 
-    DELETE
-    FROM hive.transactions_multisig_reversible htmr
+    DELETE FROM hive.transactions_multisig_reversible htmr
     USING hive.transactions_reversible htr
     WHERE
-        ( htr.fork_id = htmr.fork_id AND htr.trx_hash = htmr.trx_hash )
-        AND ( htmr.fork_id <= __lowest_contexts_fork AND htr.block_num < __lowest_contexts_block_on_fork )
+            htr.fork_id = htmr.fork_id
+        AND htr.trx_hash = htmr.trx_hash
+        AND htr.block_num < __lowest_contexts_irreversible_block
     ;
 
     DELETE FROM hive.transactions_reversible htr
-    WHERE htr.fork_id <= __lowest_contexts_fork AND htr.block_num < __lowest_contexts_block_on_fork;
+    WHERE htr.block_num < __lowest_contexts_irreversible_block;
 
     DELETE FROM hive.blocks_reversible hbr
-    WHERE hbr.fork_id <= __lowest_contexts_fork AND hbr.num < __lowest_contexts_block_on_fork;
+    WHERE hbr.num < __lowest_contexts_irreversible_block;
 END;
 $BODY$
 ;
