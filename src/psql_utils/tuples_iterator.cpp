@@ -21,6 +21,8 @@ TuplesStoreIterator::next() {
   if ( !tuplestore_gettupleslot( m_tuples, true, false, m_slot ) )
     return boost::optional< HeapTupleData& >();
 
-  return boost::optional< HeapTupleData& >( *m_slot->tts_tuple );
+  if ( m_slot->tts_ops->get_heap_tuple == nullptr )
+    return boost::optional< HeapTupleData& >();
+  return boost::optional< HeapTupleData& >( *m_slot->tts_ops->get_heap_tuple( m_slot ) );
 }
 } // namespace PsqlTools::PsqlUtils

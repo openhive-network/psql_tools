@@ -8,8 +8,8 @@
 #include <string>
 
 extern "C" {
-struct tupleDesc;
-typedef tupleDesc* TupleDesc;
+struct TupleDescData;
+typedef struct TupleDescData *TupleDesc;
 struct HeapTupleData;
 typedef HeapTupleData *HeapTuple;
 } // extern "C"
