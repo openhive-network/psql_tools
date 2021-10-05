@@ -6,7 +6,8 @@ VOLATILE
 AS
 $BODY$
 BEGIN
-    -- nothing to do here
+    PERFORM hive.app_create_context( 'context' );
+    PERFORM hive.import_state_provider( 'ACCOUNTS', 'context' );
 END;
 $BODY$
 ;
@@ -19,11 +20,17 @@ CREATE FUNCTION test_when()
 AS
 $BODY$
 BEGIN
-BEGIN
-        PERFORM hive.import_state_provider( 'ACCOUNT', 'not-existed-context' );
+        BEGIN
+        PERFORM hive.import_state_provider( 'ACCOUNTS', 'not-existed-context' );
             ASSERT FALSE, 'Cannot raise expected exception when context does not exists';
         EXCEPTION WHEN OTHERS THEN
-END;
+        END;
+
+        BEGIN
+        PERFORM hive.import_state_provider( 'ACCOUNTS', 'context' );
+            ASSERT FALSE, 'Cannot raise expected exception when provider is registered twice';
+        EXCEPTION WHEN OTHERS THEN
+        END;
 END;
 $BODY$
 ;
