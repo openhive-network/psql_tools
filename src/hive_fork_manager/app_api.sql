@@ -258,15 +258,28 @@ END;
 $BODY$;
 
 
-CREATE OR REPLACE FUNCTION hive.import_state_provider( state_provider hive.state_providers, _context hive.context_name )
+CREATE OR REPLACE FUNCTION hive.import_state_provider( _state_provider hive.state_providers, _context hive.context_name )
     RETURNS void
     LANGUAGE plpgsql
     VOLATILE
 AS
 $BODY$
+DECLARE
+    __context_id hive.contexts.id%TYPE;
 BEGIN
-    -- check if contexts exists
-    -- insert provider into hive.registered_providers
+
+    SELECT hac.id
+    FROM hive.contexts hac
+    WHERE hac.name = _context
+    INTO __context_id;
+
+    IF __context_id IS NULL THEN
+         RAISE EXCEPTION 'No context with name %', _context;
+    END IF;
+
+    INSERT INTO hive.state_providers_registered( context_id, state_provider )
+    VALUES( __context_id, _state_provider );
+
 END;
 $BODY$
 ;
