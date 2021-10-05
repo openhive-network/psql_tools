@@ -196,6 +196,9 @@ ADD_SQL_FUNCTIONAL_TESTS( app_api/app_next_block_after_attach.sql )
 ADD_SQL_FUNCTIONAL_TESTS( scenarios/massive_sync_live_blocks_and_fork.sql )
 ADD_SQL_FUNCTIONAL_TESTS( scenarios/massive_sync_live_blocks_and_fork_non_forking_app.sql )
 
+ADD_SQL_FUNCTIONAL_TESTS( state_providers/import_state_provider_negative.sql )
+ADD_SQL_FUNCTIONAL_TESTS( state_providers/import_state_provider.sql )
+
 
 ADD_AUTHORIZATION_FUNCTIONAL_TESTS( authorization/alice_access_to_bob_negative.sql )
 ADD_AUTHORIZATION_FUNCTIONAL_TESTS( authorization/alice_access_events_infrustructure.sql )
