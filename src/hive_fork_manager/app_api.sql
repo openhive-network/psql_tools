@@ -256,3 +256,17 @@ BEGIN
     RETURN __result;
 END;
 $BODY$;
+
+
+CREATE OR REPLACE FUNCTION hive.import_state_provider( state_provider hive.state_providers, _context hive.context_name )
+    RETURNS void
+    LANGUAGE plpgsql
+    VOLATILE
+AS
+$BODY$
+BEGIN
+    -- check if contexts exists
+    -- insert provider into hive.registered_providers
+END;
+$BODY$
+;
