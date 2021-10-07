@@ -6,7 +6,7 @@ AS
 $BODY$
 DECLARE
     __context_id hive.contexts.id%TYPE;
-    __table_name TEXT := 'accounts_' || _context;
+    __table_name TEXT := _context || '_accounts';
 BEGIN
     SELECT hac.id
     FROM hive.contexts hac
@@ -84,7 +84,7 @@ AS
 $BODY$
 DECLARE
     __context_id hive.contexts.id%TYPE;
-    __table_name TEXT := 'accounts_' || _context;
+    __table_name TEXT := _context || '_accounts';
 BEGIN
     SELECT hac.id
     FROM hive.contexts hac
@@ -96,7 +96,7 @@ BEGIN
     END IF;
 
     EXECUTE format(
-        'INSERT INTO hive.accounts_%s( name )
+        'INSERT INTO hive.%s_accounts( name )
         SELECT CASE lower( ot.name )
             WHEN ''hive::protocol::pow_operation'' THEN hive.get_account_from_pow( ov.body )
             WHEN ''hive::protocol::pow2_operation'' THEN hive.get_account_from_pow2( ov.body )
