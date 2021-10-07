@@ -23,7 +23,7 @@ DECLARE
 BEGIN
     SELECT hive.start_provider_accounts( 'context' ) INTO __tables;
 
-    ASSERT ( __tables = ARRAY[ 'hive.accounts_context' ]::TEXT[] ), 'Wrong table name';
+    ASSERT ( __tables = ARRAY[ 'hive.context_accounts' ]::TEXT[] ), 'Wrong table name';
 END;
 $BODY$
 ;
@@ -36,7 +36,7 @@ STABLE
 AS
 $BODY$
 BEGIN
-    ASSERT EXISTS ( SELECT FROM information_schema.tables WHERE table_schema='hive' AND table_name  = 'accounts_context' ), 'Accounts table was not created';
+    ASSERT EXISTS ( SELECT FROM information_schema.tables WHERE table_schema='hive' AND table_name  = 'context_accounts' ), 'Accounts table was not created';
 END;
 $BODY$
 ;

@@ -113,13 +113,13 @@ STABLE
 AS
 $BODY$
 BEGIN
-    ASSERT EXISTS ( SELECT * FROM hive.accounts_context WHERE name = 'account_from_pow' ), 'account_from_pow not created';
-    ASSERT EXISTS ( SELECT * FROM hive.accounts_context WHERE name = 'account_from_pow2' ), 'account_from_pow2 not created';
-    ASSERT EXISTS ( SELECT * FROM hive.accounts_context WHERE name = 'account_from_create_account' ), 'account_from_create_account not created';
-    ASSERT EXISTS ( SELECT * FROM hive.accounts_context WHERE name = 'account_from_create_claimed_account' ), 'account_from_create_claimed_account not created';
-    ASSERT EXISTS ( SELECT * FROM hive.accounts_context WHERE name = 'account_from_create_claimed_account_del' ), 'account_create_with_delegation_operation not created';
+    ASSERT EXISTS ( SELECT * FROM hive.context_accounts WHERE name = 'account_from_pow' ), 'account_from_pow not created';
+    ASSERT EXISTS ( SELECT * FROM hive.context_accounts WHERE name = 'account_from_pow2' ), 'account_from_pow2 not created';
+    ASSERT EXISTS ( SELECT * FROM hive.context_accounts WHERE name = 'account_from_create_account' ), 'account_from_create_account not created';
+    ASSERT EXISTS ( SELECT * FROM hive.context_accounts WHERE name = 'account_from_create_claimed_account' ), 'account_from_create_claimed_account not created';
+    ASSERT EXISTS ( SELECT * FROM hive.context_accounts WHERE name = 'account_from_create_claimed_account_del' ), 'account_create_with_delegation_operation not created';
 
-    ASSERT ( SELECT COUNT(*) FROM hive.accounts_context ) = 5, 'Wrong number of accounts';
+    ASSERT ( SELECT COUNT(*) FROM hive.context_accounts ) = 5, 'Wrong number of accounts';
 END;
 $BODY$
 ;
