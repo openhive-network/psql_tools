@@ -293,15 +293,28 @@ AS
 $BODY$
 DECLARE
     __context_id hive.contexts.id%TYPE;
-
+    __is_attached BOOL;
+    __current_block_num hive.blocks.num%TYPE;
 BEGIN
-    SELECT hac.id
+    SELECT hac.id, hac.is_attached, hac.current_block_num
     FROM hive.contexts hac
     WHERE hac.name = _context
-        INTO __context_id;
+        INTO __context_id, __is_attached, __current_block_num;
 
     IF __context_id IS NULL THEN
-             RAISE EXCEPTION 'No context with name %', _context;
+        RAISE EXCEPTION 'No context with name %', _context;
+    END IF;
+
+    IF __is_attached = TRUE AND _first_block != _last_block  THEN
+        RAISE EXCEPTION 'Only one block can be processed when context is attached';
+    END IF;
+
+    IF _first_block > _last_block THEN
+        RAISE EXCEPTION 'First block % is greater than %', _first_block, _last_block;
+    END IF;
+
+    IF  _first_block < __current_block_num THEN
+        RAISE EXCEPTION 'First block % is lower than context % current block %', _first_block, _context, __current_block_num;
     END IF;
 
     PERFORM hive.update_one_state_providers( _first_block, _last_block, hsp.state_provider, _context )
