@@ -200,6 +200,7 @@ ADD_SQL_FUNCTIONAL_TESTS( state_providers/import_state_provider_negative.sql )
 ADD_SQL_FUNCTIONAL_TESTS( state_providers/import_state_provider.sql )
 ADD_SQL_FUNCTIONAL_TESTS( state_providers/accounts_start_state_provider.sql )
 ADD_SQL_FUNCTIONAL_TESTS( state_providers/accounts_update_state_provider.sql )
+ADD_SQL_FUNCTIONAL_TESTS( state_providers/update_state_provider.sql )
 
 
 ADD_AUTHORIZATION_FUNCTIONAL_TESTS( authorization/alice_access_to_bob_negative.sql )

@@ -283,3 +283,30 @@ BEGIN
 END;
 $BODY$
 ;
+
+
+CREATE OR REPLACE FUNCTION hive.update_state_providers( _first_block hive.blocks.num%TYPE, _last_block hive.blocks.num%TYPE, _context hive.context_name )
+    RETURNS void
+    LANGUAGE plpgsql
+    VOLATILE
+AS
+$BODY$
+DECLARE
+    __context_id hive.contexts.id%TYPE;
+
+BEGIN
+    SELECT hac.id
+    FROM hive.contexts hac
+    WHERE hac.name = _context
+        INTO __context_id;
+
+    IF __context_id IS NULL THEN
+             RAISE EXCEPTION 'No context with name %', _context;
+    END IF;
+
+    PERFORM hive.update_one_state_providers( _first_block, _last_block, hsp.state_provider, _context )
+    FROM hive.state_providers_registered hsp
+    WHERE hsp.context_id = __context_id;
+END;
+$BODY$
+;
