@@ -113,3 +113,28 @@ BEGIN
 END;
 $BODY$
 ;
+
+
+CREATE OR REPLACE FUNCTION hive.drop_state_provider_accounts( _context hive.context_name )
+    RETURNS void
+    LANGUAGE plpgsql
+    VOLATILE
+AS
+$BODY$
+DECLARE
+    __context_id hive.contexts.id%TYPE;
+    __table_name TEXT := _context || '_accounts';
+BEGIN
+    SELECT hac.id
+    FROM hive.contexts hac
+    WHERE hac.name = _context
+    INTO __context_id;
+
+    IF __context_id IS NULL THEN
+        RAISE EXCEPTION 'No context with name %', _context;
+    END IF;
+
+    EXECUTE format( 'DROP TABLE hive.%I', __table_name );
+END;
+$BODY$
+;
