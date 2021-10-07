@@ -406,3 +406,38 @@ BEGIN
 END;
 $BODY$
 ;
+
+CREATE OR REPLACE FUNCTION hive.drop_state_provider( _state_provider HIVE.STATE_PROVIDERS, _context hive.context_name )
+    RETURNS void
+    LANGUAGE plpgsql
+    VOLATILE
+AS
+$BODY$
+BEGIN
+    EXECUTE format(
+            'SELECT hive.drop_state_provider_%s( %L )'
+        , _state_provider, _context
+    );
+END;
+$BODY$
+;
+
+CREATE OR REPLACE FUNCTION hive.drop_context_providers( _context hive.context_name )
+    RETURNS void
+    LANGUAGE plpgsql
+    VOLATILE
+AS
+$BODY$
+BEGIN
+    PERFORM hive.drop_state_provider( hsp.state_provider, _context )
+    FROM hive.state_providers_registered hsp
+    JOIN hive.contexts hc ON hc.id = hsp.context_id
+    WHERE hc.name = _context;
+
+    DELETE FROM hive.state_providers_registered hsp
+    USING hive.contexts hc
+    WHERE hc.name = _context AND hc.id = hsp.context_id;
+END;
+$BODY$
+;
+

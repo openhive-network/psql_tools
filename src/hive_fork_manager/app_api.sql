@@ -29,6 +29,7 @@ CREATE OR REPLACE FUNCTION hive.app_remove_context( _name hive.context_name )
 AS
 $BODY$
 BEGIN
+    PERFORM hive.drop_context_providers( _name );
     PERFORM hive.context_remove( _name );
 
     PERFORM hive.drop_signatures_view( _name );
@@ -68,7 +69,7 @@ BEGIN
     INTO __context_id;
 
     IF __context_id IS NULL THEN
-                RAISE EXCEPTION 'No context with name %', _context_name;
+            RAISE EXCEPTION 'No context with name %', _context_name;
     END IF;
 
     -- if there there is a registered table for a given context
