@@ -100,7 +100,24 @@ CREATE FUNCTION test_when()
 AS
 $BODY$
 BEGIN
-    PERFORM hive.update_state_providers( 1, 6, 'context' );
+
+    BEGIN
+        PERFORM hive.update_state_providers( 1, 1, 'context' );
+        ASSERT FALSE, 'Possible update for block less than current block';
+    EXCEPTION WHEN OTHERS THEN
+    END;
+
+    BEGIN
+        PERFORM hive.update_state_providers( 1, 5, 'context' );
+        ASSERT FALSE, 'Possible update for blocks range for attached context';
+    EXCEPTION WHEN OTHERS THEN
+    END;
+
+    BEGIN
+        PERFORM hive.update_state_providers( 3, 2, 'context' );
+        ASSERT FALSE, 'First block grater then the last';
+    EXCEPTION WHEN OTHERS THEN
+    END;
 END;
 $BODY$
 ;
@@ -113,13 +130,7 @@ STABLE
 AS
 $BODY$
 BEGIN
-    ASSERT EXISTS ( SELECT * FROM hive.context_accounts WHERE name = 'account_from_pow' ), 'account_from_pow not created';
-    ASSERT EXISTS ( SELECT * FROM hive.context_accounts WHERE name = 'account_from_pow2' ), 'account_from_pow2 not created';
-    ASSERT EXISTS ( SELECT * FROM hive.context_accounts WHERE name = 'account_from_create_account' ), 'account_from_create_account not created';
-    ASSERT EXISTS ( SELECT * FROM hive.context_accounts WHERE name = 'account_from_create_claimed_account' ), 'account_from_create_claimed_account not created';
-    ASSERT EXISTS ( SELECT * FROM hive.context_accounts WHERE name = 'account_from_create_claimed_account_del' ), 'account_create_with_delegation_operation not created';
-
-    ASSERT ( SELECT COUNT(*) FROM hive.context_accounts ) = 5, 'Wrong number of accounts';
+    ASSERT ( SELECT COUNT(*) FROM hive.context_accounts ) = 0, 'Some account were added';
 END;
 $BODY$
 ;
