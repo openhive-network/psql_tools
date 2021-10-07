@@ -120,6 +120,55 @@ inherits from`hive.trx_histogram` to register it into the context 'trx_histogram
 To switch from non-forking application to forking one all the applications' tables have to be registered in contexts using
 'hive.app_register_table' method.
 
+## States Providers Library
+There are examples of applications that are generic and theirs tables could be used by a wide range of more specific applications.
+The tables present in a more conviniet way some part of the blockchain state included in blocks data.
+Some of the common applications are embedded inside hive_fork_manager in form of state providers: tables definitions and code to fill them.
+
+### Why we introduced The States Providers instead of preparing regular applications?
+The problem is that applications work with different speeds and so they work on data snapshots from different blockchain times.
+If we would deliver regular applications, then all user applications won't be synchronized with delivered applications.
+The user's applications may read data from prepared applications which are not fit to theirs states.
+Another problem is authorization - one application cannot look at data of other applications (except when they are owned by the same postgres role).
+This problem can be partially solved with group roles and privileges inheritance, but it is not sure it would be possible
+to prevent writing by users applications to 'the prepared application' tables.
+
+### Why we introduced The States Providers instead of extending the set of reversible/irreversible tables?
+There is one big difference between reversible data and other tables - reversible data are only inserted or removed, other tables
+can also be updated. Whole reversible/irreversible mechanics is based on assumption that the rows are only inserted
+or removed during a fork is serviced.
+
+### Basic concept
+A state provider is a SQL code that contains tables definitions and methods to fill that tables. A user's application
+may import a provider with SQL command `hive.import_state_provider( _state_name, _context )`. During import, new tables
+are created and registered in the application's context. The application needs to call hive.update_imported_states( range_of_blocks )
+to update tables created by imported states providers.
+The import of 'state providers' must be called by the application before any call of its massive sync or hive.app_next_block. Repeating
+the same import does nothing.
+
+### A state provider structure
+Each state provider is a SQL file that contains functions:
+
+* `hive.start_state_provider_<provider_name>( context )`
+   The function gests application context name and creates tables to hold the state.
+   The tables name have format `hive.<context_name>_<base table_name>` and returns list of created tables names.
+
+* `hive.update_state_provider_<provider_name>( first_block, last_block, context )`
+   The function updates all 'state providers' tables registered in the context
+
+* `hive.drop_state_provider_<provider_name>( _context hive.context_name )`
+   The function drops all data created by the state provider for a given context 
+
+### State provider and forks
+When the context is a non-forking one, then the tables are not registered to rewind during a fork servicing. When the context
+is forking one then the tables are registered in the forking mechanism and will be rewind during forks. When the context
+is changing from non-forking to forking one, then the provider's tables being also registered.
+
+Disadvantages
+Each application which imports any 'state provider' got the tables exclusively for its PostgreSQL Role. A lot of data may be
+redundant in the case when a few applications use the same state provider because each of them has its own private instance of its tables. It may look redundant for some cases, but indeed there is no other method to guarantee consistency between the provider's
+state and other application's tables. Even small differences between head blocks of two applications may result in large differences between contents of their provider's tables
+
 ## Important implementation details
 ### REVERSIBLE AND IRREVERSIBLE BLOCKS
 IRREVERSIBLE BLOCKS is a set of database tables for blocks which the blockchain considers irreversible - they will never change (i.e. they can no longer be reverted by a fork switch).
