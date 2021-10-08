@@ -277,10 +277,11 @@ BEGIN
          RAISE EXCEPTION 'No context with name %', _context;
     END IF;
 
-    INSERT INTO hive.state_providers_registered( context_id, state_provider )
-    VALUES( __context_id, _state_provider );
-
-    EXECUTE format( 'SELECT hive.start_provider_%s( %L )', _state_provider, _context );
+    EXECUTE format(
+        'INSERT INTO hive.state_providers_registered( context_id, state_provider, tables )
+        SELECT %s , %L, hive.start_provider_%s( %L )
+        ON CONFLICT DO NOTHING', __context_id, _state_provider, _state_provider, _context
+    );
 END;
 $BODY$
 ;
