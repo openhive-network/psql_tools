@@ -24,7 +24,7 @@ BEGIN
                     )', __table_name, __table_name
     );
 
-    RETURN ARRAY[ 'hive.' || __table_name ];
+    RETURN ARRAY[ __table_name ];
 END;
 $BODY$
 ;

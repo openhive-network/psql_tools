@@ -277,11 +277,26 @@ BEGIN
          RAISE EXCEPTION 'No context with name %', _context;
     END IF;
 
+    IF EXISTS( SELECT 1 FROM hive.state_providers_registered WHERE context_id = __context_id AND state_provider = _state_provider ) THEN
+        RAISE LOG 'The state % provider is already imported for context %.', _state_provider, _context;
+        RETURN;
+    END IF;
+
+
     EXECUTE format(
         'INSERT INTO hive.state_providers_registered( context_id, state_provider, tables )
         SELECT %s , %L, hive.start_provider_%s( %L )
         ON CONFLICT DO NOTHING', __context_id, _state_provider, _state_provider, _context
     );
+
+    IF NOT hive.app_is_forking( _context ) THEN
+        RETURN;
+    END IF;
+
+    -- register tables
+    PERFORM hive.app_register_table( 'hive', unnest( hsp.tables ), _context )
+    FROM hive.state_providers_registered hsp
+    WHERE hsp.context_id = __context_id AND hsp.state_provider = _state_provider;
 END;
 $BODY$
 ;
