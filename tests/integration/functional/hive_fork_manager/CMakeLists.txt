@@ -207,7 +207,7 @@ ADD_SQL_FUNCTIONAL_TESTS( state_providers/update_state_provider_attached.sql )
 ADD_SQL_FUNCTIONAL_TESTS( state_providers/update_state_provider_negative.sql )
 ADD_SQL_FUNCTIONAL_TESTS( state_providers/context_remove_and_state_provider.sql )
 ADD_SQL_FUNCTIONAL_TESTS( state_providers/import_state_provider_non_fork.sql )
-
+ADD_SQL_FUNCTIONAL_TESTS( state_providers/switch_state_provider_to_forkable.sql )
 
 ADD_AUTHORIZATION_FUNCTIONAL_TESTS( authorization/alice_access_to_bob_negative.sql )
 ADD_AUTHORIZATION_FUNCTIONAL_TESTS( authorization/alice_access_events_infrustructure.sql )

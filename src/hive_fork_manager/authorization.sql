@@ -70,6 +70,7 @@ GRANT EXECUTE ON FUNCTION
     , hive.remove_unecessary_events( _new_irreversible_block INT )
     , hive.register_table( _table_schema TEXT,  _table_name TEXT, _context_name TEXT ) -- needs to alter tables when indexes are disabled
     , hive.chceck_constrains( _table_schema TEXT,  _table_name TEXT )
+    , hive.register_state_provider_tables( _context hive.context_name )
 TO hived_group;
 
 REVOKE EXECUTE ON FUNCTION
