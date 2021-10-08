@@ -23,7 +23,7 @@ DECLARE
 BEGIN
     SELECT hive.start_provider_accounts( 'context' ) INTO __tables;
 
-    ASSERT ( __tables = ARRAY[ 'hive.context_accounts' ]::TEXT[] ), 'Wrong table name';
+    ASSERT ( __tables = ARRAY[ 'context_accounts' ]::TEXT[] ), 'Wrong table name';
 END;
 $BODY$
 ;

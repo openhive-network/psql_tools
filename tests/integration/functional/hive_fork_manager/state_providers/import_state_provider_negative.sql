@@ -26,11 +26,8 @@ BEGIN
         EXCEPTION WHEN OTHERS THEN
         END;
 
-        BEGIN
+
         PERFORM hive.import_state_provider( 'ACCOUNTS', 'context' );
-            ASSERT FALSE, 'Cannot raise expected exception when provider is registered twice';
-        EXCEPTION WHEN OTHERS THEN
-        END;
 END;
 $BODY$
 ;
@@ -43,7 +40,7 @@ STABLE
 AS
 $BODY$
 BEGIN
-    -- NOTHING TO CHECK HERE
+    ASSERT ( SELECT COUNT(*) FROM hive.state_providers_registered WHERE context_id = 1 AND state_provider = 'ACCOUNTS' AND tables = ARRAY[ 'context_accounts' ]::TEXT[] ) = 1, 'State provider not registered';
 END;
 $BODY$
 ;
