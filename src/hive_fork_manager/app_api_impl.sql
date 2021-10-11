@@ -418,6 +418,10 @@ BEGIN
             'SELECT hive.drop_state_provider_%s( %L )'
         , _state_provider, _context
     );
+
+    DELETE FROM hive.state_providers_registered hsp
+    USING hive.contexts hc
+    WHERE hc.name = _context AND hsp.state_provider = _state_provider AND hc.id = hsp.context_id;
 END;
 $BODY$
 ;
@@ -433,10 +437,6 @@ BEGIN
     FROM hive.state_providers_registered hsp
     JOIN hive.contexts hc ON hc.id = hsp.context_id
     WHERE hc.name = _context;
-
-    DELETE FROM hive.state_providers_registered hsp
-    USING hive.contexts hc
-    WHERE hc.name = _context AND hc.id = hsp.context_id;
 END;
 $BODY$
 ;
