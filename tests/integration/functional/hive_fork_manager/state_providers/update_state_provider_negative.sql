@@ -85,7 +85,7 @@ BEGIN
     ;
 
     PERFORM hive.app_create_context( 'context' );
-    PERFORM hive.import_state_provider( 'ACCOUNTS', 'context' );
+    PERFORM hive.app_state_provider_import( 'ACCOUNTS', 'context' );
 
     UPDATE hive.contexts SET current_block_num = 6, irreversible_block = 6;
 END;
@@ -102,19 +102,19 @@ $BODY$
 BEGIN
 
     BEGIN
-        PERFORM hive.update_state_providers( 1, 1, 'context' );
+        PERFORM hive.app_state_providers_update( 1, 1, 'context' );
         ASSERT FALSE, 'Possible update for block less than current block';
     EXCEPTION WHEN OTHERS THEN
     END;
 
     BEGIN
-        PERFORM hive.update_state_providers( 1, 5, 'context' );
+        PERFORM hive.app_state_providers_update( 1, 5, 'context' );
         ASSERT FALSE, 'Possible update for blocks range for attached context';
     EXCEPTION WHEN OTHERS THEN
     END;
 
     BEGIN
-        PERFORM hive.update_state_providers( 3, 2, 'context' );
+        PERFORM hive.app_state_providers_update( 3, 2, 'context' );
         ASSERT FALSE, 'First block grater then the last';
     EXCEPTION WHEN OTHERS THEN
     END;

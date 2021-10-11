@@ -7,7 +7,7 @@ AS
 $BODY$
 BEGIN
     PERFORM hive.app_create_context( 'context' );
-    PERFORM hive.import_state_provider( 'ACCOUNTS', 'context' );
+    PERFORM hive.app_state_provider_import( 'ACCOUNTS', 'context' );
 END;
 $BODY$
 ;
@@ -21,13 +21,13 @@ AS
 $BODY$
 BEGIN
         BEGIN
-        PERFORM hive.import_state_provider( 'ACCOUNTS', 'not-existed-context' );
+        PERFORM hive.app_state_provider_import( 'ACCOUNTS', 'not-existed-context' );
             ASSERT FALSE, 'Cannot raise expected exception when context does not exists';
         EXCEPTION WHEN OTHERS THEN
         END;
 
 
-        PERFORM hive.import_state_provider( 'ACCOUNTS', 'context' );
+        PERFORM hive.app_state_provider_import( 'ACCOUNTS', 'context' );
 END;
 $BODY$
 ;

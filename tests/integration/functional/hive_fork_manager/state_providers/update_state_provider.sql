@@ -85,7 +85,7 @@ BEGIN
     ;
 
     PERFORM hive.app_create_context( 'context' );
-    PERFORM hive.import_state_provider( 'ACCOUNTS', 'context' );
+    PERFORM hive.app_state_provider_import( 'ACCOUNTS', 'context' );
     PERFORM hive.app_context_detach( 'context' );
 
     UPDATE hive.contexts SET current_block_num = 1, irreversible_block = 6;
@@ -101,7 +101,7 @@ CREATE FUNCTION test_when()
 AS
 $BODY$
 BEGIN
-    PERFORM hive.update_state_providers( 1, 6, 'context' );
+    PERFORM hive.app_state_providers_update( 1, 6, 'context' );
 END;
 $BODY$
 ;
