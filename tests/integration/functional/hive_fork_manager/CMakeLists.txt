@@ -217,3 +217,5 @@ ADD_AUTHORIZATION_FUNCTIONAL_TESTS( authorization/hived_to_api_access.sql )
 
 ADD_EXAMPLES_FUNCTIONAL_TESTS( examples/forking_application.py )
 ADD_EXAMPLES_FUNCTIONAL_TESTS( examples/non_forking_application.py )
+ADD_EXAMPLES_FUNCTIONAL_TESTS( examples/accounts_provider_application.py )
+ADD_EXAMPLES_FUNCTIONAL_TESTS( examples/accounts_provider_non_fork_application.py )
