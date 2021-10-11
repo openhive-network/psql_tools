@@ -29,7 +29,7 @@ CREATE OR REPLACE FUNCTION hive.app_remove_context( _name hive.context_name )
 AS
 $BODY$
 BEGIN
-    PERFORM hive.drop_context_providers( _name );
+    PERFORM hive.app_state_provider_drop_all( _name );
     PERFORM hive.context_remove( _name );
 
     PERFORM hive.drop_signatures_view( _name );
@@ -258,7 +258,7 @@ END;
 $BODY$;
 
 
-CREATE OR REPLACE FUNCTION hive.import_state_provider( _state_provider hive.state_providers, _context hive.context_name )
+CREATE OR REPLACE FUNCTION hive.app_state_provider_import( _state_provider hive.state_providers, _context hive.context_name )
     RETURNS void
     LANGUAGE plpgsql
     VOLATILE
@@ -302,7 +302,7 @@ $BODY$
 ;
 
 
-CREATE OR REPLACE FUNCTION hive.update_state_providers( _first_block hive.blocks.num%TYPE, _last_block hive.blocks.num%TYPE, _context hive.context_name )
+CREATE OR REPLACE FUNCTION hive.app_state_providers_update( _first_block hive.blocks.num%TYPE, _last_block hive.blocks.num%TYPE, _context hive.context_name )
     RETURNS void
     LANGUAGE plpgsql
     VOLATILE
@@ -337,6 +337,40 @@ BEGIN
     PERFORM hive.update_one_state_providers( _first_block, _last_block, hsp.state_provider, _context )
     FROM hive.state_providers_registered hsp
     WHERE hsp.context_id = __context_id;
+END;
+$BODY$
+;
+
+CREATE OR REPLACE FUNCTION hive.app_state_provider_drop( _state_provider HIVE.STATE_PROVIDERS, _context hive.context_name )
+    RETURNS void
+    LANGUAGE plpgsql
+    VOLATILE
+AS
+$BODY$
+BEGIN
+    EXECUTE format(
+            'SELECT hive.drop_state_provider_%s( %L )'
+        , _state_provider, _context
+        );
+
+    DELETE FROM hive.state_providers_registered hsp
+        USING hive.contexts hc
+    WHERE hc.name = _context AND hsp.state_provider = _state_provider AND hc.id = hsp.context_id;
+END;
+$BODY$
+;
+
+CREATE OR REPLACE FUNCTION hive.app_state_provider_drop_all( _context hive.context_name )
+    RETURNS void
+    LANGUAGE plpgsql
+    VOLATILE
+AS
+$BODY$
+BEGIN
+    PERFORM hive.app_state_provider_drop( hsp.state_provider, _context )
+    FROM hive.state_providers_registered hsp
+    JOIN hive.contexts hc ON hc.id = hsp.context_id
+    WHERE hc.name = _context;
 END;
 $BODY$
 ;

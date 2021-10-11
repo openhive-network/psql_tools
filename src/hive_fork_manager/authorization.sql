@@ -76,8 +76,8 @@ GRANT EXECUTE ON FUNCTION
     , hive.register_table( _table_schema TEXT,  _table_name TEXT, _context_name TEXT ) -- needs to alter tables when indexes are disabled
     , hive.chceck_constrains( _table_schema TEXT,  _table_name TEXT )
     , hive.register_state_provider_tables( _context hive.context_name )
-    , hive.update_state_providers( _first_block hive.blocks.num%TYPE, _last_block hive.blocks.num%TYPE, _context hive.context_name )
-    , hive.import_state_provider( _state_provider hive.state_providers, _context hive.context_name )
+    , hive.app_state_providers_update( _first_block hive.blocks.num%TYPE, _last_block hive.blocks.num%TYPE, _context hive.context_name )
+    , hive.app_state_provider_import( _state_provider hive.state_providers, _context hive.context_name )
 TO hived_group;
 
 REVOKE EXECUTE ON FUNCTION

@@ -20,7 +20,7 @@ CREATE FUNCTION test_when()
 AS
 $BODY$
 BEGIN
-    PERFORM hive.import_state_provider( 'ACCOUNTS', 'context' );
+    PERFORM hive.app_state_provider_import( 'ACCOUNTS', 'context' );
 END;
 $BODY$
 ;

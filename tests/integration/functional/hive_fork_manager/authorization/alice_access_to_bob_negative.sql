@@ -168,25 +168,25 @@ BEGIN
     ASSERT NOT EXISTS( SELECT * FROM hive.state_providers_registered ), 'Alice sees Bobs registered state provider';
 
     BEGIN
-        PERFORM hive.import_state_provider( 'ACCOUNTS', 'bob_context' );
+        PERFORM hive.app_state_provider_import( 'ACCOUNTS', 'bob_context' );
         ASSERT FALSE, 'Alice can import state providers to Bob context';
     EXCEPTION WHEN OTHERS THEN
     END;
 
     BEGIN
-        PERFORM hive.update_state_providers( 0, 100, 'bob_context' );
+        PERFORM hive.app_state_providers_update( 0, 100, 'bob_context' );
         ASSERT FALSE, 'Alice can update Bobs state providers';
     EXCEPTION WHEN OTHERS THEN
     END;
 
     BEGIN
-        PERFORM hive.update_state_providers( 0, 100, 'bob_context' );
+        PERFORM hive.app_state_providers_update( 0, 100, 'bob_context' );
         ASSERT FALSE, 'Alice can update Bobs state providers';
     EXCEPTION WHEN OTHERS THEN
     END;
 
     BEGIN
-        PERFORM hive.drop_state_provider( 'ACCOUNTS', 'bob_context' );
+        PERFORM hive.app_state_provider_drop( 'ACCOUNTS', 'bob_context' );
         ASSERT FALSE, 'Alice can drop Bobs state providers';
     EXCEPTION WHEN OTHERS THEN
     END;
@@ -209,7 +209,7 @@ BEGIN
     CREATE TABLE bob_table( id INT ) INHERITS( hive.bob_context );
     PERFORM hive.app_next_block( 'bob_context' );
     INSERT INTO bob_table VALUES( 100 );
-    PERFORM hive.import_state_provider( 'ACCOUNTS', 'bob_context' );
+    PERFORM hive.app_state_provider_import( 'ACCOUNTS', 'bob_context' );
 END;
 $BODY$
 ;

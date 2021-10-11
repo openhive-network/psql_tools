@@ -7,7 +7,7 @@ AS
 $BODY$
 BEGIN
     PERFORM hive.app_create_context( 'context' );
-    PERFORM hive.import_state_provider( 'ACCOUNTS', 'context' );
+    PERFORM hive.app_state_provider_import( 'ACCOUNTS', 'context' );
 END;
 $BODY$
 ;
