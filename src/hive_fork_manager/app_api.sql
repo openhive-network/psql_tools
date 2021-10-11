@@ -284,8 +284,8 @@ BEGIN
 
 
     EXECUTE format(
-        'INSERT INTO hive.state_providers_registered( context_id, state_provider, tables )
-        SELECT %s , %L, hive.start_provider_%s( %L )
+        'INSERT INTO hive.state_providers_registered( context_id, state_provider, tables, owner )
+        SELECT %s , %L, hive.start_provider_%s( %L ), current_user
         ON CONFLICT DO NOTHING', __context_id, _state_provider, _state_provider, _context
     );
 
