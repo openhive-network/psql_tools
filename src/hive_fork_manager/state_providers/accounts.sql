@@ -50,14 +50,7 @@ $BODY$
 DECLARE
     __result TEXT;
 BEGIN
-    SELECT json_extract_path_text( work_arrays.work[2], 'input', 'worker_account' )
-    INTO __result
-    FROM (
-        SELECT array_agg( work.* ) as work
-        FROM json_array_elements( json_extract_path( CAST( _pow2_operation as json ), 'value', 'work' ) ) as work
-        ) as work_arrays
-    ;
-
+    RETURN json_extract_path_text( CAST( _pow2_operation as json ), 'value', 'work', 'value', 'input', 'worker_account' );
     RETURN __result;
 END;
 $BODY$

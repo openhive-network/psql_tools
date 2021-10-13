@@ -57,9 +57,7 @@ BEGIN
        }
     }}' ) --pow
          , ( 2, 2, 0, 0, 2, '2016-06-22 19:10:21-07'::timestamp, '{"value":{
-        "work": [
-          0,
-          {
+        "work":{ "value":{
             "input": {
               "worker_account": "account_from_pow2",
               "prev_block": "003ea604345523c344fbadab605073ea712dd76f",
@@ -67,7 +65,7 @@ BEGIN
             },
             "pow_summary": 3817904373
           }
-        ],
+        },
         "props": {
           "account_creation_fee": {
             "amount": "1",
