@@ -25,7 +25,7 @@ VALUES
 
 INSERT INTO hive.operations
 VALUES
-( 1, 5, 0, 0, 5, '2016-06-22 19:10:21-07'::timestamp, '{"new_account_name": "account_5"}' );
+( 1, 5, 0, 0, 5, '2016-06-22 19:10:21-07'::timestamp, '{"value":{"new_account_name": "account_5"}}' );
 
 SELECT hive.end_massive_sync(5);
 
@@ -60,7 +60,7 @@ VALUES
 
 INSERT INTO hive.operations_reversible
 VALUES
-    ( 2, 8, 0, 0, 5, '2016-06-22 19:10:21-07'::timestamp, '{"new_account_name": "account_8_reversible"}', 1 );
+    ( 2, 8, 0, 0, 5, '2016-06-22 19:10:21-07'::timestamp, '{"value":{"new_account_name": "account_8_reversible"}}', 1 );
 
 
 SELECT hive.push_block(
@@ -86,7 +86,7 @@ VALUES
 
 INSERT INTO hive.operations_reversible
 VALUES
-    ( 2, 8, 0, 0, 5, '2016-06-22 19:10:21-07'::timestamp, '{"new_account_name": "account_8"}', 2 );
+    ( 2, 8, 0, 0, 5, '2016-06-22 19:10:21-07'::timestamp, '{"value":{"new_account_name": "account_8"}}', 2 );
 
 SELECT hive.push_block(
          ( 9, '\xBADD91', '\xCAFE91', '2016-06-22 19:10:25-07'::timestamp )

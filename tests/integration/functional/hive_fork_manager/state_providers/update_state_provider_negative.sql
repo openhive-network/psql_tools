@@ -36,7 +36,7 @@ BEGIN
 
     INSERT INTO hive.operations
     VALUES
-    ( 1, 1, 0, 0, 1, '2016-06-22 19:10:21-07'::timestamp, '{
+    ( 1, 1, 0, 0, 1, '2016-06-22 19:10:21-07'::timestamp, '{"value":{
        "worker_account":"account_from_pow",
        "block_id":"00000449f7860b82b4fbe2f317c670e9f01d6d9a",
        "nonce":3899,
@@ -55,8 +55,8 @@ BEGIN
           "maximum_block_size":131072,
           "hbd_interest_rate":1000
        }
-    }' ) --pow
-         , ( 2, 2, 0, 0, 2, '2016-06-22 19:10:21-07'::timestamp, '{
+    }}' ) --pow
+         , ( 2, 2, 0, 0, 2, '2016-06-22 19:10:21-07'::timestamp, '{"value":{
         "work": [
           0,
           {
@@ -77,7 +77,7 @@ BEGIN
           "maximum_block_size": 131072,
           "hbd_interest_rate": 1000
         }
-      }' ) --pow2
+      }}' ) --pow2
          , ( 3, 3, 0, 0, 3, '2016-06-22 19:10:21-07'::timestamp, '{"new_account_name": "account_from_create_account"}' )
          , ( 4, 4, 0, 0, 4, '2016-06-22 19:10:21-07'::timestamp, '{"new_account_name": "account_from_create_claimed_account"}' )
          , ( 5, 5, 0, 0, 5, '2016-06-22 19:10:21-07'::timestamp, '{"new_account_name": "account_from_create_claimed_account_del"}' )
