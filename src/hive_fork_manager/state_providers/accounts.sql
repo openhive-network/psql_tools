@@ -70,7 +70,7 @@ CREATE OR REPLACE FUNCTION hive.get_account_from_accounts_operations( _account_o
 AS
 $BODY$
 BEGIN
-    RETURN json_extract_path_text( CAST( _account_operation as json ), 'new_account_name' );
+    RETURN json_extract_path_text( CAST( _account_operation as json ), 'value', 'new_account_name' );
 END;
 $BODY$
 ;
