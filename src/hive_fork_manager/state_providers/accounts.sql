@@ -21,7 +21,8 @@ BEGIN
                       id SERIAL
                     , name TEXT
                     , CONSTRAINT pk_%s PRIMARY KEY( id )
-                    )', __table_name, __table_name
+                    , CONSTRAINT uq_%s UNIQUE( name )
+                    )', __table_name, __table_name, __table_name
     );
 
     RETURN ARRAY[ __table_name ];
@@ -100,7 +101,7 @@ BEGIN
         WHERE
             ARRAY[ lower( ot.name ) ] <@ ARRAY[ ''hive::protocol::pow_operation'', ''hive::protocol::pow2_operation'', ''hive::protocol::account_create_operation'', ''hive::protocol::create_claimed_account_operation'', ''hive::protocol::account_create_with_delegation_operation'' ]
             AND ov.block_num BETWEEN %s AND %s
-        ON CONFLICT DO NOTHING'
+        '
         , _context, _context, _first_block, _last_block
     );
 END;
