@@ -97,15 +97,11 @@ BEGIN
 
     EXECUTE format(
         'INSERT INTO hive.%s_accounts( name )
-        SELECT CASE lower( ot.name )
-            WHEN ''hive::protocol::pow_operation'' THEN hive.get_account_from_pow( ov.body )
-            WHEN ''hive::protocol::pow2_operation'' THEN hive.get_account_from_pow2( ov.body )
-            ELSE hive.get_account_from_accounts_operations( ov.body )
-        END as name
+        SELECT hive.get_account_from_accounts_operations( ov.body ) as name
         FROM hive.%s_operations_view ov
         JOIN hive.operation_types ot ON ov.op_type_id = ot.id
         WHERE
-            ARRAY[ lower( ot.name ) ] <@ ARRAY[ ''hive::protocol::pow_operation'', ''hive::protocol::pow2_operation'', ''hive::protocol::account_create_operation'', ''hive::protocol::create_claimed_account_operation'', ''hive::protocol::account_create_with_delegation_operation'' ]
+            ARRAY[ lower( ot.name ) ] <@ ARRAY[ ''hive::protocol::account_created_operation'' ]
             AND ov.block_num BETWEEN %s AND %s
         ON CONFLICT DO NOTHING'
         , _context, _context, _first_block, _last_block
