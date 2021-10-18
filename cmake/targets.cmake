@@ -1,4 +1,8 @@
 MACRO( ADD_RUNTIME_LOADED_LIB target_name )
+    IF ( "${POSTGRES_VERSION}" EQUAL "12" )
+        MESSAGE( FATAL_ERROR, "Only Postgres v12 is supported" )
+    ENDIF()
+
     SET( test_lib test_${target_name} )
     FILE( GLOB_RECURSE sources ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp )
     ADD_LIBRARY( ${target_name} SHARED ${sources} )
@@ -17,6 +21,10 @@ MACRO( ADD_RUNTIME_LOADED_LIB target_name )
 ENDMACRO()
 
 MACRO( ADD_LOADTIME_LOADED_LIB target_name )
+    IF ( "${POSTGRES_VERSION}" EQUAL "12" )
+        MESSAGE( FATAL_ERROR, "Only Postgres v12 is supported" )
+    ENDIF()
+
     SET( test_lib test_${target_name} )
     FILE( GLOB_RECURSE sources ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp )
     ADD_LIBRARY( ${target_name} MODULE ${sources} )
@@ -35,6 +43,10 @@ MACRO( ADD_LOADTIME_LOADED_LIB target_name )
 ENDMACRO()
 
 MACRO( ADD_STATIC_LIB target_name )
+    IF ( "${POSTGRES_VERSION}" EQUAL "12" )
+        MESSAGE( FATAL_ERROR, "Only Postgres v12 is supported" )
+    ENDIF()
+
     SET( test_lib test_${target_name} )
     FILE( GLOB_RECURSE sources ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp )
     ADD_LIBRARY( ${target_name} STATIC ${sources} )
