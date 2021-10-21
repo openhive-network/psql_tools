@@ -8,9 +8,10 @@ Contains implementations of Postgres specific tools providing functionalities re
 2. postgresql server dev package: `sudo apt-get install postgresql-dev`
 
 ## CMake and make
+1. `git submodule update --init --recursive`
 1. create build directory, for exemple in sources root: `mkdir build`
 2. `cd build`
-3. `cmake ..`
+3. `cmake -DCMAKE_BUILD_TYPE=Release ..`
 4. `make`
 
 ### Choose version of the Postgres to compile with
