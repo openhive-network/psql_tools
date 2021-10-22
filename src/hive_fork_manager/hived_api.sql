@@ -55,7 +55,7 @@ $BODY$
 DECLARE
     __irreversible_head_block hive.blocks.num%TYPE;
 BEGIN
-    PERFORM hive.remove_unecessary_events( _block_num );
+    --PERFORM hive.remove_unecessary_events( _block_num );
     SELECT COALESCE( MAX( num ), 0 ) INTO __irreversible_head_block FROM hive.blocks;
 
     -- application contexts will use the event to clear data in shadow tables
@@ -69,7 +69,7 @@ BEGIN
     PERFORM hive.copy_signatures_to_irreversible( __irreversible_head_block, _block_num );
 
     -- remove unneeded blocks and events
-    PERFORM hive.remove_obsolete_reversible_data( _block_num );
+    -- PERFORM hive.remove_obsolete_reversible_data( _block_num );
 
     UPDATE hive.irreversible_data SET consistent_block = _block_num;
 END;
